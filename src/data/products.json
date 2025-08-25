@@ -1,0 +1,24 @@
+[
+  {
+    "id": 1,
+    "title": "Remera Oversize",
+    "description": "Remera de algodón 100% oversize color negro",
+    "code": "REM001",
+    "price": 5500,
+    "status": true,
+    "stock": 20,
+    "category": "indumentaria",
+    "thumbnails": ["img/remera1.png"]
+  },
+  {
+    "id": 2,
+    "title": "Zapatillas Urban",
+    "description": "Zapatillas urbanas de lona, color blanco",
+    "code": "ZAP001",
+    "price": 12000,
+    "status": true,
+    "stock": 15,
+    "category": "calzado",
+    "thumbnails": ["img/zapatilla1.png"]
+  }
+]
