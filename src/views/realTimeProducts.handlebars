@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>{{title}}</title>
+</head>
+<body>
+  <h1>{{title}}</h1>
+  <form id="productForm">
+    <input type="text" name="title" placeholder="Título del producto" required />
+    <input type="number" name="price" placeholder="Precio" required />
+    <button type="submit">Agregar producto</button>
+  </form>
+  <h2>Lista de productos:</h2>
+  <ul id="productList"></ul>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/realtime.js"></script>
+</body>
+</html>

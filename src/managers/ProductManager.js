@@ -1,29 +1,30 @@
-const fs = require('fs').promises;
-const path = require('path');
+import fs from "fs/promises";
+import path from "path";
 
 class ProductManager {
   constructor(filePath) {
-    this.filePath = filePath || path.join(__dirname, '..', 'data', 'products.json');
+    this.filePath =
+      filePath || path.join(process.cwd(), "src", "data", "products.json");
   }
   async #readFile() {
     try {
-      const data = await fs.readFile(this.filePath, 'utf-8');
-      return JSON.parse(data || '[]');
+      const data = await fs.readFile(this.filePath, "utf-8");
+      return JSON.parse(data || "[]");
     } catch (err) {
-      if (err.code === 'ENOENT') return [];
+      if (err.code === "ENOENT") return [];
       throw err;
     }
   }
   async #writeFile(data) {
-    await fs.writeFile(this.filePath, JSON.stringify(data, null, 2), 'utf-8');
+    await fs.writeFile(this.filePath, JSON.stringify(data, null, 2), "utf-8");
   }
   #normalizeId(id) {
     return String(id);
   }
   #generateId(products) {
     const numericIds = products
-      .map(p => Number(p.id))
-      .filter(n => !Number.isNaN(n));
+      .map((p) => Number(p.id))
+      .filter((n) => !Number.isNaN(n));
     const maxId = numericIds.length ? Math.max(...numericIds) : 0;
     return String(maxId + 1);
   }
@@ -33,10 +34,17 @@ class ProductManager {
   async getById(id) {
     const list = await this.#readFile();
     const pid = this.#normalizeId(id);
-    return list.find(p => this.#normalizeId(p.id) === pid) || null;
+    return list.find((p) => this.#normalizeId(p.id) === pid) || null;
   }
   async create(data) {
-    const required = ['title', 'description', 'code', 'price', 'stock', 'category'];
+    const required = [
+      "title",
+      "description",
+      "code",
+      "price",
+      "stock",
+      "category",
+    ];
     for (const field of required) {
       if (data[field] === undefined || data[field] === null) {
         const err = new Error(`Falta el campo requerido: ${field}`);
@@ -45,7 +53,7 @@ class ProductManager {
       }
     }
     const list = await this.#readFile();
-    if (list.some(p => p.code === data.code)) {
+    if (list.some((p) => p.code === data.code)) {
       const err = new Error('El campo "code" debe ser único');
       err.status = 400;
       throw err;
@@ -59,7 +67,9 @@ class ProductManager {
       status: data.status === undefined ? true : Boolean(data.status),
       stock: Number(data.stock),
       category: String(data.category),
-      thumbnails: Array.isArray(data.thumbnails) ? data.thumbnails.map(String) : []
+      thumbnails: Array.isArray(data.thumbnails)
+        ? data.thumbnails.map(String)
+        : [],
     };
     list.push(newProduct);
     await this.#writeFile(list);
@@ -68,9 +78,9 @@ class ProductManager {
   async update(id, data) {
     const list = await this.#readFile();
     const pid = this.#normalizeId(id);
-    const idx = list.findIndex(p => this.#normalizeId(p.id) === pid);
+    const idx = list.findIndex((p) => this.#normalizeId(p.id) === pid);
     if (idx === -1) {
-      const err = new Error('Producto no encontrado');
+      const err = new Error("Producto no encontrado");
       err.status = 404;
       throw err;
     }
@@ -80,7 +90,9 @@ class ProductManager {
     if (rest.stock !== undefined) updated.stock = Number(rest.stock);
     if (rest.status !== undefined) updated.status = Boolean(rest.status);
     if (rest.thumbnails !== undefined) {
-      updated.thumbnails = Array.isArray(rest.thumbnails) ? rest.thumbnails.map(String) : [];
+      updated.thumbnails = Array.isArray(rest.thumbnails)
+        ? rest.thumbnails.map(String)
+        : [];
     }
     list[idx] = updated;
     await this.#writeFile(list);
@@ -89,9 +101,9 @@ class ProductManager {
   async delete(id) {
     const list = await this.#readFile();
     const pid = this.#normalizeId(id);
-    const idx = list.findIndex(p => this.#normalizeId(p.id) === pid);
+    const idx = list.findIndex((p) => this.#normalizeId(p.id) === pid);
     if (idx === -1) {
-      const err = new Error('Producto no encontrado');
+      const err = new Error("Producto no encontrado");
       err.status = 404;
       throw err;
     }
@@ -101,4 +113,4 @@ class ProductManager {
   }
 }
 
-module.exports = ProductManager;
+export default ProductManager;
